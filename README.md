@@ -10,7 +10,7 @@ Note: if there are overlapping flags, use '--' to separate flags from arguments.
 
 Application Options:
   -E, --encode       Encrypts environment variables into a .env.AES file.
-  -g, --add-global   Use global environment variables to add to encoding/decoding.
+  -A, --adopt        Adopt the current processes environment variables to add to encoding/decoding.
   -a, --add          Use ./.env file to add environment variables to encoding/decoding.
   -i, --input:       Filepath to the .env.AES file. (default: ./.env.AES)
   -f, --file:        Filepath to an .env file. (default: ./.env)

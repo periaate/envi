@@ -22,11 +22,11 @@ import (
 type Options struct {
 	Encode bool `short:"E" long:"encode" description:"Encrypts environment variables into a .env.AES file."`
 
-	AddGlobal bool              `short:"g" long:"add-global" description:"Use global environment variables to add to encoding/decoding."`
-	AddEnv    bool              `short:"a" long:"add" description:"Use ./.env file to add environment variables to encoding/decoding."`
-	Input     string            `short:"i" long:"input" description:"Filepath to the .env.AES file." default:"./.env.AES"`
-	EnvFile   string            `short:"f" long:"file" description:"Filepath to an .env file." default:"./.env"`
-	EnvArgs   map[string]string `short:"e" long:"env" description:"Environment variables in the form of key:value. Takes precedence over other environment variables."`
+	AdoptGlobal bool              `short:"A" long:"adopt" description:"Adopt the current processes environment variables to add to encoding/decoding."`
+	AddEnv      bool              `short:"a" long:"add" description:"Use ./.env file to add environment variables to encoding/decoding."`
+	Input       string            `short:"i" long:"input" description:"Filepath to the .env.AES file." default:"./.env.AES"`
+	EnvFile     string            `short:"f" long:"file" description:"Filepath to an .env file." default:"./.env"`
+	EnvArgs     map[string]string `short:"e" long:"env" description:"Environment variables in the form of key:value. Takes precedence over other environment variables."`
 
 	Help bool `short:"h" long:"help" description:"Show this help message."`
 
@@ -114,7 +114,7 @@ func getPassPhrase() []byte {
 func getEnvMap(opts *Options) map[string]string {
 	envMap := make(map[string]string)
 
-	if opts.AddGlobal {
+	if opts.AdoptGlobal {
 		for _, env := range os.Environ() {
 			kv := strings.SplitN(env, "=", 2)
 			envMap[kv[0]] = kv[1]
