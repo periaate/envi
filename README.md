@@ -78,6 +78,3 @@ envi -ae "KEY:VAL" -- tool -a
 
 ## Note
 This was implemented from start to finish in a few hours, including the documentation. There are likely bugs with the program, and the examples might be wrong and are not exhaustive by any means.
-
-## License
-This project is licensed under [GPLv3](./LICENSE).
