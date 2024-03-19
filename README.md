@@ -5,76 +5,90 @@ Envi allows for storing and running programs with environment variables which ar
 ```
 envi - A simple tool to encrypt and decrypt environment variables.
 Usage:
-  envi [flags] [--] [arguments]
-Note: if there are overlapping flags, use '--' to separate flags from arguments.
+  envi [options] [arguments]
+Note: if there are conflicting or overlapping flags or options, use '--' to separate `[options]` from `[arguments]`.
 
 Application Options:
-  -E, --encode       Encrypts environment variables into a .env.AES file.
-  -A, --adopt        Adopt the current processes environment variables to add to encoding/decoding.
-  -a, --add          Use ./.env file to add environment variables to encoding/decoding.
-  -i, --input:       Filepath to the .env.AES file. (default: ./.env.AES)
-  -f, --file:        Filepath to an .env file. (default: ./.env)
-  -e, --env:         Environment variables in the form of key:value. Takes precedence over other environment variables.
-  -h, --help         Show this help message.
-  -d, --debug        Show debug information.
+  -E, --encode  Encrypts input environment variables into a .env.AES file.
+  -D, --decode  Decods environment variables from an .env.AES file.
+  -i, --input=  Filepath to the .env, .env.AES files. By default it uses any .env file in the current directory.
+  -o, --output= Filepath to write the encrypted/decrypted environment variables to. (default: .env.AES)
+  -A, --adopt   Adopt the current processes environment variables to add to encoding/decoding.
+  -d, --debug   Show debug information.
 
 Help Options:
-  -?                Show this help message
-  -h, --help         Show this help message
+  -h, --help    Show this help message
 ```
 
 ## Examples
-We will say that we have a program called `printenv` which prints all env variables given to it. We will also have a .env file which looks like this:
+
+We will be using the [printenv](./cmd/printenv/) program to demonstrate the functionality of `envi`.
+
+Lets say that we have the following .env file
 ```
 AB=CD
 NAME=Periaate
 ```
 
-We will first encrypt these to our `.env.AES` file using the `-E` or `--encode` and `-a` or `--add` flag. If we wanted to add our current processes env variables we could use the `-A` or `--adpot` flags to adopt the env vars.
+Now we can encrypt that .env file into an encrypted version by using the `-E` or `--encode` flags:
 ```
-envi -Ea
+envi -E
 >Enter passkey:
 >.env.AES file saved successfully.
 ```
+By default encryption tries to read from `./.env`, but we can also specify which file(s) we want it to use.
 
 We can now use `envi` to call `printenv` with our encrypted env file:
 ```
 envi printenv
 >Enter passkey:
->"AB=CD"
->"NAME=Periaate"
+AB=CD
+NAME=Periaate
 ```
 
-We can overwrite env values by using the `-e` or `--env` flag, which allows us to provide key value pairs in our sub process:
+Let's make another .env file `.env-dev`.
 ```
-envi -e "NAME:Daniel" printenv
+DEV_KEY=DEV_VAL
+NUM=10
+AB=DE
+```
+
+We can use a specific file with the `-i` or `--input` flag. If we aren't using an encrypted file, no passkey will be asked.
+```
+envi -i .env-dev printenv
+DEV_KEY=DEV_VAL
+NUM=10
+AB=DE
+```
+
+Multiple inputs may be specified. Environment variables from encrypted files take priority over others.
+```
+envi -i .env-dev -i .env.AES printenv
 >Enter passkey:
->"AB=CD"
->"NAME=Daniel"
+AB=CD
+NAME=Periaate
+DEV_KEY=DEV_VAL
+NUM=10
 ```
 
-If rewrote our .env file to look like:
+Multiple inputs may also be specified when encoding. If the same environment variable exists in multiple files, the prior value will be overwritten.
 ```
-AB=12
-NEW=FIELD
-```
-
-We can now use the `-a` flag when calling printenv:
-```
-envi -a printenv
->"AB=CD"
->"NAME=Periaate"
->"NEW=FIELD"
+envi -i .env -i .env-dev -E
+>Enter passkey:
+envi printenv
+>Enter passkey:
+NAME=Periaate
+DEV_KEY=DEV_VAL
+NUM=10
+AB=DE // `.env`s `AB=CD` overwritten with `.env-dev`s `AB=DE`
 ```
 
-We can see that the `.env.AES` file takes priority over the `.env` file. Variables given with the `-e` flag take presedence over all others.
-
-
-If we were calling something which used flags, envi's flags might cause collisions with the flags of the program we are calling. In these cases we can use `--` after having given our flags to not try to parse any flags beyond that.
+Files can be decrypted with `-D` or `--decrypt` flags.
 ```
-envi -ae "KEY:VAL" -- tool -a
+envi -D
+>Enter passkey:
+NAME=Periaate
+DEV_KEY=DEV_VAL
+NUM=10
+AB=DE
 ```
-
-
-## Note
-This was implemented from start to finish in a few hours, including the documentation. There are likely bugs with the program, and the examples might be wrong and are not exhaustive by any means.
