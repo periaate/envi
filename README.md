@@ -1,3 +1,5 @@
+Does this README explain what the program does and how it can be used?
+
 # Envi
 Envi allows for storing and running programs with environment variables which are stored in an encrypted file.
 
@@ -10,7 +12,7 @@ Note: if there are conflicting or overlapping flags or options, use '--' to sepa
 
 Application Options:
   -E, --encode  Encrypts input environment variables into a .env.AES file.
-  -D, --decode  Decods environment variables from an .env.AES file.
+  -D, --decode  Decodes environment variables from an .env.AES file.
   -i, --input=  Filepath to the .env, .env.AES files. By default it uses any .env file in the current directory.
   -o, --output= Filepath to write the encrypted/decrypted environment variables to. (default: .env.AES)
   -A, --adopt   Adopt the current processes environment variables to add to encoding/decoding.
@@ -24,7 +26,7 @@ Help Options:
 
 We will be using the [printenv](./cmd/printenv/) program to demonstrate the functionality of `envi`.
 
-Lets say that we have the following .env file
+Let's say that we have the following .env file
 ```
 AB=CD
 NAME=Periaate
@@ -36,7 +38,7 @@ envi -E
 >Enter passkey:
 >.env.AES file saved successfully.
 ```
-By default encryption tries to read from `./.env`, but we can also specify which file(s) we want it to use.
+By default, encryption tries to read from `./.env`, but we can also specify which file(s) we want it to use.
 
 We can now use `envi` to call `printenv` with our encrypted env file:
 ```

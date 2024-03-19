@@ -15,7 +15,7 @@ import (
 
 type Options struct {
 	Encode bool `short:"E" long:"encode" description:"Encrypts input environment variables into a .env.AES file."`
-	Decode bool `short:"D" long:"decode" description:"Decods environment variables from an .env.AES file."`
+	Decode bool `short:"D" long:"decode" description:"Decodes environment variables from an .env.AES file."`
 
 	Inputs []string `short:"i" long:"input" description:"Filepath to the .env, .env.AES files. By default it uses any .env file in the current directory."`
 	Output string   `short:"o" long:"output" description:"Filepath to write the encrypted/decrypted environment variables to." default:".env.AES"`
